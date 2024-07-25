@@ -1,11 +1,7 @@
 import mongoose from 'mongoose';
 
 const productoSchema = new mongoose.Schema({
-    producto_id: {
-        type: String,
-        required: true,
-        trim: true
-    },
+    
     producto_nombre: {
         type: String,
         required: true,
@@ -36,7 +32,7 @@ const productoSchema = new mongoose.Schema({
     },
     producto_imagen: {
         type: [String],
-        required: true
+        required: false
     }
 }, {
     timestamps: true
