@@ -88,15 +88,21 @@ const usuarioSchema = new mongoose.Schema({
     },
     usuario_telefono: {
         type: [String],
-        required: true
+        required: false
     },
     usuario_direccion: {
         type: [direccionSchema],
-        required: true
+        required: false
     },
     usuario_mapago: {
         type: [mapagoSchema],
-        required: true
+        required: false
+    },
+    usuario_role: {
+        type: Number,
+        require: true,
+        enum: [0, 1],
+        default: 1
     }
 }, {
     timestamps: true
