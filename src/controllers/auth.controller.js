@@ -2,6 +2,7 @@ import usuario from "../models/usuario.models.js";
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from "../libs/jwt.js";
 
+
 export const register = async (req, res) => {
     const { usuario_correo, usuario_contrasena, usuario_nombre, usuario_apellido, usuario_apellido_2, usuario_fecnac,
         usuario_telefono, usuario_direccion, usuario_mapago, usuario_role } = req.body;
@@ -42,10 +43,41 @@ export const logout = async (req, res) => {
     return res.sendStatus(200);
 };
 
+
 export const profile = async (req, res) => {
-    const userFound = await usuario.findById
-    res.send(req.user);
+    try {
+        const userId = req.user.id; // Asegúrate de obtener el ID del usuario desde el token o de alguna otra manera
+        const userFound = await usuario.findById(userId);
+
+        if (!userFound) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (userFound.usuario_role === 0) {
+            return res.status(200).json({
+                message: "Welcome Admin! :D",
+                id: userFound._id,
+                usuario_nombre: userFound.usuario_nombre,
+                usuario_correo: userFound.usuario_correo
+            });
+        }
+
+        if (userFound.usuario_role === 1) {
+            return res.status(200).json({
+                message: "Welcome user! :D",
+                usuario_nombre: userFound.usuario_nombre
+            });
+        }
+
+        // Si el rol del usuario no es ni 0 ni 1
+        res.status(400).json({ message: "Invalid user role" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
 };
+
 
 export const login = async (req, res) => {
     try {
@@ -60,17 +92,17 @@ export const login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: ["The password is incorrect"] });
         }
-        
+
         const token = await createAccessToken({ id: userFound._id, usuario_nombre: userFound.usuario_nombre });
 
         res.cookie("token", token, { httpOnly: process.env.NODE_ENV !== "development", secure: true, sameSite: "none" });
 
         if (userFound.usuario_role == 0) {
-            return res.status(200).json({ message:["Welcome Admin! :D"]});
+            return res.status(200).json({ message: ["Welcome Admin! :D"] });
         };
 
         res.status(200).json({
-            message:["Welcome User! :D"],
+            message: ["Welcome User! :D"],
             id: userFound._id,
             usuario_nombre: userFound.usuario_nombre,
             usuario_correo: userFound.usuario_correo
