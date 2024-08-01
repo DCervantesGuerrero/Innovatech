@@ -41,3 +41,5 @@ const historialproductoSchema = new mongoose.Schema(
 }
 
 );
+
+export default mongoose.model('Historial_Compra', historialproductoSchema)

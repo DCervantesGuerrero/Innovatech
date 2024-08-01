@@ -45,3 +45,4 @@ export const deleteProducto = async (req, res) => {
  
 };
 
+export const addPicture = async (req, res) => {};

@@ -59,8 +59,7 @@ const usuarioSchema = new mongoose.Schema({
     usuario_correo: {
         type: String,
         required: true,
-        trim: true,
-        match: [/.+\@.+\..+/]
+        trim: true
     },
     usuario_contrasena: {
         type: String,
